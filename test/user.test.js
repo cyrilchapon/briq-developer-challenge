@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
 const models = require('../models');
+const Sequelize = models.Sequelize;
 const User = models.user;
 const Transaction = models.transaction;
 const Promise = require('bluebird');
