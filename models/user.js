@@ -13,7 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true,
+      validate: {
+        notEmpty: true,
+        len: [3]
+      }
     },
     balance: {
       type: DataTypes.INTEGER,
