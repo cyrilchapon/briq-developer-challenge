@@ -17,8 +17,26 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Transaction.associate = function(models) {
-    Transaction.belongsTo(models.user, { as: 'userFrom' });
-    Transaction.belongsTo(models.user, { as: 'userTo' });
+    Transaction.belongsTo(models.user, { as: 'userFrom', foreignKey: {
+      validate: {
+        userFromDifferentFromUserTo: function() {
+          if(this.userFromId === this.userToId) {
+            throw new Error('userFrom and userTo should be different');
+          }
+        }
+      },
+      allowNull: false
+    }});
+    Transaction.belongsTo(models.user, { as: 'userTo', foreignKey: {
+      validate: {
+        userFromDifferentFromUserTo: function() {
+          if(this.userFromId === this.userToId) {
+            throw new Error('userFrom and userTo should be different');
+          }
+        }
+      },
+      allowNull: false
+    }});
   }
 
   return Transaction;
