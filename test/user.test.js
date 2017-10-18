@@ -18,6 +18,18 @@ test('A user has a default balance of 0', () => {
   expect(user.balance).toEqual(0);
 });
 
+test('A user username should be greater than 3 length', () => {
+  const userWithoutName = User.build({username: null});
+  const userWithShortName = User.build({username: 'aa'});
+  const userWithValidName = User.build({username: 'aaa'});
+
+  return Promise.all([
+    expect(userWithoutName.validate()).rejects.toBeInstanceOf(Sequelize.ValidationError),
+    expect(userWithShortName.validate()).rejects.toBeInstanceOf(Sequelize.ValidationError),
+    userWithValidName.validate()
+  ]);
+});
+
 describe('.give()', function() {
   beforeEach(function() {
     return Promise.all([
