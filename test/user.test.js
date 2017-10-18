@@ -27,7 +27,7 @@ describe('.give()', function() {
   });
 
   test('A give() increments and decrements', () => {
-    let amount = 3;
+    const amount = 3;
 
     const initialUserFromData = getRandomUserValues();
     const initialUserToData = getRandomUserValues();
@@ -59,7 +59,7 @@ describe('.give()', function() {
   });
 
   test('Giving briqs under user balance fails', () => {
-    let amount = 3;
+    const amount = 3;
 
     return expect(Promise.all([
       User.create(getRandomUserValues({balance: 2})),
@@ -75,14 +75,11 @@ describe('.give()', function() {
   });
 
   test('Giving briqs (with obsolete values) under user balance fails', () => {
-    let amount = 3;
-
-    const initialUserFromData = getRandomUserValues({balance: 2});
-    const initialUserToData = getRandomUserValues();
+    const amount = 3;
 
     return expect(Promise.all([
-      User.create(_.cloneDeep(initialUserFromData)),
-      User.create(_.cloneDeep(initialUserToData))
+      User.create(_.cloneDeep(getRandomUserValues({balance: 2}))),
+      User.create(_.cloneDeep(getRandomUserValues()))
     ])
     .spread(function(userFrom, userTo) {
       userFrom.balance = faker.random.number({min: amount});
