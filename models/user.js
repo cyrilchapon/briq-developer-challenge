@@ -25,17 +25,25 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.prototype.give = function (amount, userTo, options = {}) {
+    const userFrom = this;
     const tx = _.defaults({ amount, userToId: userTo.id }, options);
-    return this.createDebit(tx)
-      .then(() => {
-        this.balance = this.balance - amount;
-        userTo.balance = userTo.balance + amount;
 
-        return Promise.all([
-          this.save(),
-          userTo.save()
-        ]);
-      });
+    return Promise.all([
+      userFrom.reload({attributes: ['balance']}),
+      userTo.reload({attributes: ['balance']})
+    ])
+    .then(function() {
+      return userFrom.createDebit(tx)
+    })
+    .then(function() {
+      userFrom.balance = userFrom.balance - amount;
+      userTo.balance = userTo.balance + amount;
+
+      return Promise.all([
+        userFrom.save(),
+        userTo.save()
+      ]);
+    });
   };
 
   User.associate = function (models) {
