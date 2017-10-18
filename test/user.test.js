@@ -1,12 +1,11 @@
 const User = require('../models').user;
-const Moniker = require('moniker');
 const Promise = require('bluebird');
 const faker = require('faker');
 const _ = require('lodash');
 
 function getRandomUserValues(values) {
   return _.merge({
-    username: Moniker.choose(),
+    username: faker.internet.userName(),
     balance: faker.random.number()
   }, values);
 }
