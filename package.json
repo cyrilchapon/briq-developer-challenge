@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "NODE_ENV=test node test/setupDb.js && jest --runInBand",
+    "testQueries": "NODE_ENV=test node test/setupDb.js && jest queries --runInBand",
     "populate": "node test/setupDb.js && node test/random.js"
   },
   "dependencies": {
