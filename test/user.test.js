@@ -38,4 +38,8 @@ describe('.give()', function() {
       expect(userTo.balance).toEqual(initialUserToData.balance + amount);
     });
   });
+
+  afterEach(function() {
+    return User.destroy({truncate: true, cascade: true, force: true});
+  });
 });
