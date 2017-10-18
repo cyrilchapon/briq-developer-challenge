@@ -12,9 +12,9 @@ block content
 
   h2= 'Create transaction'
   form(action='/transactions' method='POST')
-    select(name='userTo')
-      each userTo in users
-        option(value=userTo.id) #{userTo.username}
+    select(name='userFrom')
+      each userFrom in users
+        option(value=userFrom.id) #{userFrom.username}
 
     span give
 
@@ -24,7 +24,7 @@ block content
 
     select(name='userTo')
       each userTo in users
-        option(userTo.id) #{userTo.username}
+        option(value=userTo.id) #{userTo.username}
 
     button(type='submit') Go
 
