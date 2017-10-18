@@ -4,14 +4,16 @@ block content
   h1= `user ${user.username}`
 
   form(action=`/users/${user.id}?_method=PUT` method='POST')
-    label
-      span Username:
-      input(type='text' name='username' value=user.username)
+    .form-group
+      label(for='useredit-username')
+        span.form-label Username:
+      input#useredit-username.form-control(type='text' name='username' value=user.username)
 
-    label
-      span Balance:
-      input(type='number' name='balance' value=user.balance)
+    .form-group
+      label(for='useredit-balance')
+        span.form-label Balance:
+      input#useredit-balance.form-control(type='number' name='balance' value=user.balance)
 
-    button(type='submit') Ok
+    a.btn.btn-warning(href='/users') Cancel
 
-    a(href='/users') Cancel
+    button.btn.btn-primary.pull-right(type='submit') Save

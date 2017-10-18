@@ -3,5 +3,24 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(
+      rel='stylesheet'
+      href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css'
+      integrity='sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M'
+      crossorigin='anonymous'
+    )
+    link(
+      rel='stylesheet'
+      href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'
+    )
   body
-    block content
+    nav.navbar.navbar-light.bg-light
+      .container
+        a.navbar-brand(href='/')
+          i.fa.fa-home
+        ul.navbar-nav.mr-auto
+          li.nav-item
+            a.nav-link(href='/users') users
+
+    .container
+      block content
