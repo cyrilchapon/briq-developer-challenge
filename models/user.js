@@ -28,21 +28,23 @@ module.exports = (sequelize, DataTypes) => {
     const userFrom = this;
     const tx = _.defaults({ amount, userToId: userTo.id }, options);
 
-    return Promise.all([
-      userFrom.reload({attributes: ['balance']}),
-      userTo.reload({attributes: ['balance']})
-    ])
-    .then(function() {
-      return userFrom.createDebit(tx)
-    })
-    .then(function() {
-      userFrom.balance = userFrom.balance - amount;
-      userTo.balance = userTo.balance + amount;
-
+    return sequelize.transaction(function(t) {
       return Promise.all([
-        userFrom.save(),
-        userTo.save()
-      ]);
+        userFrom.reload({attributes: ['balance'], transaction: t}),
+        userTo.reload({attributes: ['balance'], transaction: t})
+      ])
+      .then(function() {
+        return userFrom.createDebit(tx, {transaction: t})
+      })
+      .then(function() {
+        userFrom.balance = userFrom.balance - amount;
+        userTo.balance = userTo.balance + amount;
+
+        return Promise.all([
+          userFrom.save({transaction: t}),
+          userTo.save({transaction: t})
+        ]);
+      });
     });
   };
 
