@@ -93,6 +93,46 @@ describe('.give()', function() {
     })).rejects.toBeInstanceOf(Sequelize.ValidationError);
   });
 
+  test('Giving briqs under user balance does not update users balance, neither create transaction', () => {
+    const amount = 3;
+
+    const initialUserFromData = getRandomUserValues({balance: 2});
+    const initialUserToData = getRandomUserValues();
+
+    return expect(Promise.all([
+      User.create(_.cloneDeep(initialUserFromData)),
+      User.create(_.cloneDeep(initialUserToData))
+    ])
+    .spread(function(userFrom, userTo) {
+      return Promise.all([
+        userFrom,
+        userTo,
+        userFrom.give(amount, userTo)
+      ])
+      .catch(function(err) {
+        return Promise.all([
+          userFrom.reload(),
+          userTo.reload(),
+          Transaction.findOne({
+            userFrom: userFrom,
+            userTo: userTo
+          })
+        ])
+        .spread(function(userFrom, userTo, transaction) {
+          expect(userFrom.balance).toEqual(initialUserFromData.balance);
+          expect(userTo.balance).toEqual(initialUserToData.balance);
+          expect(transaction).toBeFalsy();
+        })
+        .then(function() {
+          //Rethrow err to reject parent promise
+          //(we catched it here, this was supposed to reject)
+          throw err;
+        });
+      });
+    }))
+    .rejects.toBeInstanceOf(Sequelize.ValidationError);
+  });
+
   afterEach(function() {
     return Promise.all([
       _.map(_.omit(models, ['sequelize', 'Sequelize']), function(Model) {
