@@ -110,6 +110,10 @@ describe('.give()', function() {
         userFrom.give(amount, userTo)
       ])
       .catch(function(err) {
+        //Before reloading users, it shouldn' be mutated
+        expect(userFrom.balance).toEqual(initialUserFromData.balance);
+        expect(userTo.balance).toEqual(initialUserToData.balance);
+
         return Promise.all([
           userFrom.reload(),
           userTo.reload(),
@@ -119,8 +123,10 @@ describe('.give()', function() {
           })
         ])
         .spread(function(userFrom, userTo, transaction) {
+          //After reloading users, they shouldn't reflect the change
           expect(userFrom.balance).toEqual(initialUserFromData.balance);
           expect(userTo.balance).toEqual(initialUserToData.balance);
+
           expect(transaction).toBeFalsy();
         })
         .then(function() {
