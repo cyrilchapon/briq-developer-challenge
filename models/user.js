@@ -48,9 +48,9 @@ module.exports = (sequelize, DataTypes) => {
         ]);
       })
       //update user balances
-      .spread(function(userFrom, userTo) {
-        userFrom.balance = userFrom.balance - amount;
-        userTo.balance = userTo.balance + amount;
+      .spread(function(userFrom, userTo, transaction) {
+        userFrom.balance = userFrom.balance - transaction.amount;
+        userTo.balance = userTo.balance + transaction.amount;
 
         return Promise.all([
           userFrom.save({transaction: t}),
