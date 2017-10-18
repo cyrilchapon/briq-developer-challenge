@@ -1,9 +1,69 @@
 var express = require('express');
 var router = express.Router();
+const boom = require('boom');
 
-/* GET users listing. */
+const models = require('../models');
+const Sequelize = models.Sequelize;
+const User = models.user;
+
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  User.findAll({
+    order: Sequelize.col('username'),
+    raw: true
+  })
+  .then(function(users) {
+    res.render('users', { users: users });
+  });
+});
+
+router.post('/', function(req, res, next) {
+  User.create(req.body)
+  .then(function() {
+    res.redirect('/users');
+  })
+  .catch(next);
+});
+
+router.delete('/:id', function(req, res, next) {
+  User.findById(req.params.id)
+  .then(function(user) {
+    if(!user) {
+      throw boom.notFound('User not found');
+    }
+
+    return user.destroy();
+  })
+  .then(function() {
+    res.redirect('/users');
+  })
+  .catch(next);
+});
+
+router.get('/:id', function(req, res, next) {
+  User.findById(req.params.id)
+  .then(function(user) {
+    if(!user) {
+      throw boom.notFound('User not found');
+    }
+
+    res.render('user', { user: user });
+  })
+  .catch(next);
+});
+
+router.put('/:id', function(req, res, next) {
+  User.findById(req.params.id)
+  .then(function(user) {
+    if(!user) {
+      throw boom.notFound('User not found');
+    }
+
+    return user.update(req.body);
+  })
+  .then(function(user) {
+    res.redirect('/users');
+  })
+  .catch(next);
 });
 
 module.exports = router;

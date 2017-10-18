@@ -1,0 +1,65 @@
+extends layout
+
+block content
+  #users-page
+    h1= 'users'
+
+    h2.h3= 'Create user'
+    form.form.form-inline(action='/users' method='POST')
+      .form-group.mx-sm-2
+        input.form-control(type='text' name='username' placeholder='username')
+
+      .form-group.mx-sm-2
+        button.btn.btn-primary(type='submit')
+          i.fa.fa-plus
+
+    hr
+
+    h2.h3= 'Create transaction'
+    form.form.form-inline(action='/transactions' method='POST')
+      .form-group.mx-sm-2
+        select.form-control(name='userFrom')
+          each userFrom in users
+            option(value=userFrom.id) #{userFrom.username}
+
+      .form-group.mx-sm-2
+        span.form-control-plaintext give
+
+      .form-group.mx-sm-2
+        input.form-control(type='number' name='amount')
+
+      .form-group.mx-sm-2
+        span.form-control-plaintext briqs to
+
+      .form-group.mx-sm-2
+        select.form-control(name='userTo')
+          each userTo in users
+            option(value=userTo.id) #{userTo.username}
+
+      button.btn.btn-primary(type='submit')
+        i.fa.fa-check
+
+    hr
+
+    h2.h3= 'List'
+    table.table
+      thead
+        tr
+          th
+          th username
+          th balance
+      tbody
+      each user in users
+        tr
+          td.pr-sm-2
+            form.form-single-button.mr-sm-2(action=`/users/${user.id}?_method=DELETE` method='POST')
+              button.btn.btn-sm.btn-danger(type='submit')
+                i.fa.fa-times
+            form.form-single-button(action=`/users/${user.id}` method='GET')
+              button.btn.btn-sm.btn-warning(type='submit')
+                i.fa.fa-pencil
+
+          td
+            span=user.username
+          td
+            span=user.balance

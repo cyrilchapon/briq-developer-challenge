@@ -1,8 +1,6 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00B7FF;
+form.form-single-button {
+  margin:0;
+  padding:0;
+  border:0;
+  display:inline-block;
 }
