@@ -1,4 +1,5 @@
-const User = require('../models').user;
+const models = require('../models');
+const User = models.user;
 const Promise = require('bluebird');
 const faker = require('faker');
 const _ = require('lodash');
@@ -16,6 +17,14 @@ test('A user has a default balance of 0', () => {
 });
 
 describe('.give()', function() {
+  beforeEach(function() {
+    return Promise.all([
+      _.map(_.omit(models, ['sequelize', 'Sequelize']), function(Model) {
+        return Model.destroy({truncate: true, cascade: true, force: true});
+      })
+    ]);
+  });
+
   test('A give() increments and decrements', () => {
     let amount = 3;
 
@@ -40,6 +49,10 @@ describe('.give()', function() {
   });
 
   afterEach(function() {
-    return User.destroy({truncate: true, cascade: true, force: true});
+    return Promise.all([
+      _.map(_.omit(models, ['sequelize', 'Sequelize']), function(Model) {
+        return Model.destroy({truncate: true, cascade: true, force: true});
+      })
+    ]);
   });
 });
