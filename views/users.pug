@@ -34,11 +34,15 @@ block content
   table
     thead
       tr
+        th
         th=username
         th=balance
     tbody
     each user in users
       tr
+        td
+          form(action=`/users/${user.id}?_method=DELETE` method='POST')
+            button(type='submit') X
         td
           span=user.username
         td

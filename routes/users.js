@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const boom = require('boom');
 
 const models = require('../models');
 const Sequelize = models.Sequelize;
@@ -17,6 +18,21 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
   User.create(req.body)
+  .then(function() {
+    res.redirect('/users');
+  })
+  .catch(next);
+});
+
+router.delete('/:id', function(req, res, next) {
+  User.findById(req.params.id)
+  .then(function(user) {
+    if(!user) {
+      throw boom.notFound('User not found');
+    }
+
+    return user.destroy();
+  })
   .then(function() {
     res.redirect('/users');
   })
