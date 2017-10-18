@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Promise = require('bluebird');
+const boom = require('boom');
 
 const models = require('../models');
 const Sequelize = models.Sequelize;
@@ -14,9 +15,7 @@ router.post('/', function(req, res, next) {
   ])
   .spread(function(userFrom, userTo) {
     if(!userFrom || !userTo) {
-      const err = new Error('User not found');
-      err.status = 404;
-      throw err;
+      throw boom.notFound();
     }
 
     return userFrom.give(req.body.amount, userTo);
