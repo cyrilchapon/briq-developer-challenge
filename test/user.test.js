@@ -58,6 +58,22 @@ describe('.give()', function() {
     });
   });
 
+  test('Giving briqs under user balance fails', () => {
+    let amount = 3;
+
+    return expect(Promise.all([
+      User.create(getRandomUserValues({balance: 2})),
+      User.create(getRandomUserValues())
+    ])
+    .spread(function(userFrom, userTo) {
+      return Promise.all([
+        userFrom,
+        userTo,
+        userFrom.give(amount, userTo)
+      ]);
+    })).rejects.toBeTruthy();
+  });
+
   afterEach(function() {
     return Promise.all([
       _.map(_.omit(models, ['sequelize', 'Sequelize']), function(Model) {
