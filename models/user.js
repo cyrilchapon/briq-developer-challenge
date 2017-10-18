@@ -40,21 +40,21 @@ module.exports = (sequelize, DataTypes) => {
         User.findById(userTo.id, {transaction: t})
       ])
       //create debit
-      .spread(function(userFrom, userTo) {
+      .spread(function(localUserFrom, localUserTo) {
         return Promise.all([
-          userFrom,
-          userTo,
-          userFrom.createDebit(tx, {transaction: t})
+          localUserFrom,
+          localUserTo,
+          localUserFrom.createDebit(tx, {transaction: t})
         ]);
       })
       //update user balances
-      .spread(function(userFrom, userTo, transaction) {
-        userFrom.balance = userFrom.balance - transaction.amount;
-        userTo.balance = userTo.balance + transaction.amount;
+      .spread(function(localUserFrom, localUserTo, transaction) {
+        localUserFrom.balance = localUserFrom.balance - transaction.amount;
+        localUserTo.balance = localUserTo.balance + transaction.amount;
 
         return Promise.all([
-          userFrom.save({transaction: t}),
-          userTo.save({transaction: t})
+          localUserFrom.save({transaction: t}),
+          localUserTo.save({transaction: t})
         ]);
       });
     })
