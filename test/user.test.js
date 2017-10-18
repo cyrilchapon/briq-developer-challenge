@@ -74,6 +74,27 @@ describe('.give()', function() {
     })).rejects.toBeTruthy();
   });
 
+  test('Giving briqs (with obsolete values) under user balance fails', () => {
+    let amount = 3;
+
+    const initialUserFromData = getRandomUserValues({balance: 2});
+    const initialUserToData = getRandomUserValues();
+
+    return expect(Promise.all([
+      User.create(_.cloneDeep(initialUserFromData)),
+      User.create(_.cloneDeep(initialUserToData))
+    ])
+    .spread(function(userFrom, userTo) {
+      userFrom.balance = faker.random.number({min: amount});
+
+      return Promise.all([
+        userFrom,
+        userTo,
+        userFrom.give(amount, userTo)
+      ]);
+    })).rejects.toBeTruthy();
+  });
+
   afterEach(function() {
     return Promise.all([
       _.map(_.omit(models, ['sequelize', 'Sequelize']), function(Model) {
