@@ -2,6 +2,23 @@
 
 A developer challenge on Briq's tech stack
 
+## Setup
+
+### Requirements
+
+- `npm install`
+- PostgreSQL running
+
+### Config
+
+Config is env-scoped. Prefix any config with the value in `NODE_ENV` (defaulting to `development`)
+
+- `{NODE_ENV}.database`
+- `{NODE_ENV}.username`
+- `{NODE_ENV}.password`
+
+NB: Database and credentials should be created before any test / run
+
 ## Guidelines
 
 - solve this for Node.js 8 and Postgresql 9
