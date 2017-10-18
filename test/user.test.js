@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const models = require('../models');
 const User = models.user;
 const Transaction = models.transaction;
@@ -71,7 +72,7 @@ describe('.give()', function() {
         userTo,
         userFrom.give(amount, userTo)
       ]);
-    })).rejects.toBeTruthy();
+    })).rejects.toBeInstanceOf(Sequelize.ValidationError);
   });
 
   test('Giving briqs (with obsolete values) under user balance fails', () => {
@@ -89,7 +90,7 @@ describe('.give()', function() {
         userTo,
         userFrom.give(amount, userTo)
       ]);
-    })).rejects.toBeTruthy();
+    })).rejects.toBeInstanceOf(Sequelize.ValidationError);
   });
 
   afterEach(function() {
