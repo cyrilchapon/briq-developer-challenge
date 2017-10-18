@@ -1,0 +1,45 @@
+extends layout
+
+block content
+  h1= 'users'
+
+  h2= 'Create user'
+  form(action='/users' method='POST')
+    input(type='text' name='username' placeholder='username')
+    button(type='submit') Create
+
+  hr
+
+  h2= 'Create transaction'
+  form(action='/transactions' method='POST')
+    select(name='userTo')
+      each userTo in users
+        option(value=userTo.id) #{userTo.username}
+
+    span give
+
+    input(type='number' name='amount')
+
+    span briqs to
+
+    select(name='userTo')
+      each userTo in users
+        option(userTo.id) #{userTo.username}
+
+    button(type='submit') Go
+
+  hr
+
+  h2= 'List'
+  table
+    thead
+      tr
+        th=username
+        th=balance
+    tbody
+    each user in users
+      tr
+        td
+          span=user.username
+        td
+          span=user.balance
