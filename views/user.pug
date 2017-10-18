@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1= `user ${user.username}`
+
+  form(action=`/users/${user.id}?_method=PUT` method='POST')
+    .form-group
+      label(for='useredit-username')
+        span.form-label Username:
+      input#useredit-username.form-control(type='text' name='username' value=user.username)
+
+    .form-group
+      label(for='useredit-balance')
+        span.form-label Balance:
+      input#useredit-balance.form-control(type='number' name='balance' value=user.balance)
+
+    a.btn.btn-warning(href='/users') Cancel
+
+    button.btn.btn-primary.pull-right(type='submit') Save
