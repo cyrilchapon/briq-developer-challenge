@@ -6,7 +6,10 @@ const Sequelize = models.Sequelize;
 const User = models.user;
 
 router.get('/', function(req, res, next) {
-  User.findAll({raw: true})
+  User.findAll({
+    order: Sequelize.col('username'),
+    raw: true
+  })
   .then(function(users) {
     res.render('users', { users: users });
   });
