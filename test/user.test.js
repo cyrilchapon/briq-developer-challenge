@@ -1,5 +1,6 @@
 const models = require('../models');
 const User = models.user;
+const Transaction = models.transaction;
 const Promise = require('bluebird');
 const faker = require('faker');
 const _ = require('lodash');
@@ -45,6 +46,15 @@ describe('.give()', function() {
     .spread(function(userFrom, userTo) {
       expect(userFrom.balance).toEqual(initialUserFromData.balance - amount);
       expect(userTo.balance).toEqual(initialUserToData.balance + amount);
+
+      return Transaction.findOne({
+        userFrom: userFrom,
+        userTo: userTo
+      });
+    })
+    .then(function(transaction) {
+      expect(transaction).toBeTruthy();
+      expect(transaction.amount).toEqual(amount);
     });
   });
 
