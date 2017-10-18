@@ -29,14 +29,21 @@ module.exports = (sequelize, DataTypes) => {
     const tx = _.defaults({ amount, userToId: userTo.id }, options);
 
     return sequelize.transaction(function(t) {
+      //create local copies, avoid reload if transaction fail
       return Promise.all([
-        userFrom.reload({attributes: ['balance'], transaction: t}),
-        userTo.reload({attributes: ['balance'], transaction: t})
+        User.findById(userFrom.id, {transaction: t}),
+        User.findById(userTo.id, {transaction: t})
       ])
-      .then(function() {
-        return userFrom.createDebit(tx, {transaction: t})
+      //create debit
+      .spread(function(userFrom, userTo) {
+        return Promise.all([
+          userFrom,
+          userTo,
+          userFrom.createDebit(tx, {transaction: t})
+        ]);
       })
-      .then(function() {
+      //update user balances
+      .spread(function(userFrom, userTo) {
         userFrom.balance = userFrom.balance - amount;
         userTo.balance = userTo.balance + amount;
 
@@ -45,6 +52,13 @@ module.exports = (sequelize, DataTypes) => {
           userTo.save({transaction: t})
         ]);
       });
+    })
+    .then(function() {
+      //if transaction succeed, refresh user balance
+      return Promise.all([
+        userFrom.reload({attributes: ['balance']}),
+        userTo.reload({attributes: ['balance']})
+      ]);
     });
   };
 
