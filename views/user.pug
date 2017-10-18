@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= `user ${user.username}`
+
+  form(action=`/users/${user.id}?_method=PUT` method='POST')
+    label
+      span Username:
+      input(type='text' name='username' value=user.username)
+
+    label
+      span Balance:
+      input(type='number' name='balance' value=user.balance)
+
+    button(type='submit') Ok
+
+    a(href='/users') Cancel

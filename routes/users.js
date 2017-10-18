@@ -39,4 +39,31 @@ router.delete('/:id', function(req, res, next) {
   .catch(next);
 });
 
+router.get('/:id', function(req, res, next) {
+  User.findById(req.params.id)
+  .then(function(user) {
+    if(!user) {
+      throw boom.notFound('User not found');
+    }
+
+    res.render('user', { user: user });
+  })
+  .catch(next);
+});
+
+router.put('/:id', function(req, res, next) {
+  User.findById(req.params.id)
+  .then(function(user) {
+    if(!user) {
+      throw boom.notFound('User not found');
+    }
+
+    return user.update(req.body);
+  })
+  .then(function(user) {
+    res.redirect('/users');
+  })
+  .catch(next);
+});
+
 module.exports = router;
