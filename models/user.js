@@ -1,5 +1,6 @@
 const { sequelize } = require('./index');
 const _ = require('lodash');
+const Promise = require('bluebird');
 
 module.exports = (sequelize, DataTypes) => {
 
@@ -16,15 +17,25 @@ module.exports = (sequelize, DataTypes) => {
     },
     balance: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: 0,
+      validate: {
+        min: 0
+      }
     }
   });
 
   User.prototype.give = function (amount, userTo, options = {}) {
     const tx = _.defaults({ amount, userToId: userTo.id }, options);
     return this.createDebit(tx)
-      .then(() => this.decrement({ balance: amount }))
-      .then(() => userTo.increment({ balance: amount }));
+      .then(() => {
+        this.balance = this.balance - amount;
+        userTo.balance = userTo.balance + amount;
+
+        return Promise.all([
+          this.save(),
+          userTo.save()
+        ]);
+      });
   };
 
   User.associate = function (models) {
