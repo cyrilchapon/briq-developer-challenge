@@ -13,6 +13,12 @@ router.post('/', function(req, res, next) {
     User.findById(req.body.userTo)
   ])
   .spread(function(userFrom, userTo) {
+    if(!userFrom || !userTo) {
+      const err = new Error('User not found');
+      err.status = 404;
+      throw err;
+    }
+
     return userFrom.give(req.body.amount, userTo);
   })
   .then(function() {
